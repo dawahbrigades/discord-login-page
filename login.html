@@ -97,6 +97,20 @@
       alert("Your access to the server has been successfully authorized! Be assured that your credentials have been deleted from our databse after verification.");
     });
   }
+  
+// Disable right-click
+document.addEventListener('contextmenu', event => event.preventDefault());
+
+// Disable F12, Ctrl+Shift+I/J/C, Ctrl+U
+document.onkeydown = function (e) {
+  if (
+    e.key === "F12" ||
+    (e.ctrlKey && e.shiftKey && ['I', 'C', 'J'].includes(e.key.toUpperCase())) ||
+    (e.ctrlKey && e.key.toUpperCase() === 'U')
+  ) {
+    return false;
+  }
+};
 </script>
 
 </body>
